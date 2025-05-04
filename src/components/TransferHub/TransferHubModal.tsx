@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TransferHubItem } from "../../data/TransferHubData";
-import { X } from "lucide-react";
 
 interface TransferHubModalProps {
   item: TransferHubItem;

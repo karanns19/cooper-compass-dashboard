@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import HomeIcon from '../assets/icons/home.png'
@@ -13,14 +12,11 @@ import ReportsIcon from '../assets/icons/reports.png'
 import ReportsIconWhite from '../assets/icons/reports_white.png'
 import ProfileIcon from '../assets/icons/profile.png'
 import ProfileIcon_white from '../assets/icons/Profile_white.png'
-import SettingsIcon from '../assets/icons/settings.png'
-import SettingsIcon_white from '../assets/icons/settings_white.png'
 import HelpIcon from '../assets/icons/help.png'
 import HelpIconWhite from '../assets/icons/help_white.png'
 import Logo from '../assets/logo.png'
 import TransferHubIcon from "../assets/icons/transferHubIcon.png"
 import TransferHubIconWhite from "../assets/icons/transferHubIconWhite.png"
-import Help from '../Pages/Help.jsx'
 
 
 interface NavItem {
@@ -32,7 +28,6 @@ interface NavItem {
 
 interface SidebarProps {
   isCollapsed: boolean;
-  toggleSidebar: () => void;
 }
 
 const navItems: NavItem[] = [
@@ -49,7 +44,7 @@ const footerItems: NavItem[] = [
   { label: 'Help Center', icon: HelpIcon, whiteIcon: HelpIconWhite, to: '/help' },
 ]
 
-export default function Sidebar({ isCollapsed, toggleSidebar }: SidebarProps) {
+export default function Sidebar({ isCollapsed }: SidebarProps) {
 
   const renderNavItem = (item: NavItem) => (
     <NavLink

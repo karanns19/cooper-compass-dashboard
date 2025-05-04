@@ -172,7 +172,7 @@ export default function Alerts() {
         <select 
           className="border border-gray-200 rounded-lg px-3 py-2"
           value={itemsPerPage}
-          onChange={(e) => setCurrentPage(1)}
+          onChange={() => setCurrentPage(1)}
         >
           <option>{indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredAlerts.length)} of {filteredAlerts.length}</option>
         </select>

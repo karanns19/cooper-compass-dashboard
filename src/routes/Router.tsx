@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import Login from '../Pages/Login'
@@ -13,7 +13,6 @@ import Reports from '../Pages/Reports'
 import Profile from '../Pages/Profile'
 import Settings from '../Pages/Settings'
 import TransferHub from '../Pages/TransferHub'
-import Help from '../Pages/Help'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
@@ -51,7 +50,6 @@ export default function AppRouter() {
         <Route path="reports" element={<Reports />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="help" element={<Help />} />
 
         {/* Redirect to home if no match found */}
         <Route path="*" element={<Navigate to="/home" replace />} />
