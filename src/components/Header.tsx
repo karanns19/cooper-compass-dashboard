@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import ExpandIcon from '../assets/icons/Expand Icon.png';
 import CollapseIcon from '../assets/icons/Collapse Icon.png';
-import ProfileIcon from '../assets/icons/profile.png'; // fallback icon
+import ProfileIcon from '../assets/icons/Profile.png'; // fallback icon
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 

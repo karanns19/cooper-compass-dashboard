@@ -13,7 +13,7 @@ import ReportsIconWhite from '../assets/icons/Reports_white.png'
 import ProfileIcon from '../assets/icons/Profile.png'
 import ProfileIcon_white from '../assets/icons/Profile_white.png'
 import HelpIcon from '../assets/icons/help.png'
-import HelpIconWhite from '../assets/icons/Help_white.png'
+import HelpIconWhite from '../assets/icons/help_white.png'
 import Logo from '../assets/logo.png'
 import TransferHubIcon from "../assets/icons/transferHubIcon.png"
 import TransferHubIconWhite from "../assets/icons/transferHubIconWhite.png"
