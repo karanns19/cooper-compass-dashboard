@@ -12,7 +12,7 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
+      <Sidebar isCollapsed={isCollapsed} />
       <div className="flex-1 flex flex-col">
         <Header isCollapsed={isCollapsed} toggleSidebar={toggleSidebar} />
         {/* Main content area */}
