@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme{
+  --font-poppins: 'Poppins', sans-serif;
+}
+@layer base{
+
+  html{
+    @apply font-poppins;
+  }
+
+  h1{
+    @apply text-4xl font-bold;
+  }
+}

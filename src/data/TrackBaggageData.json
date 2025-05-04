@@ -1,0 +1,67 @@
+[
+    {
+      "passengerName": "James Smith",
+      "pnrNumber": "M123456",
+      "flightNumber": "AA 100",
+      "baggageTag": "B123456",
+      "status": "Delivered",
+      "lastLocation": "Dubai Terminal 3"
+    },
+    {
+      "passengerName": "Mary Johnson",
+      "pnrNumber": "XYZ789",
+      "flightNumber": "DL 200",
+      "baggageTag": "B123457",
+      "status": "In Transit",
+      "lastLocation": "London Terminal 1"
+    },
+    {
+      "passengerName": "John Besumi",
+      "pnrNumber": "UA4534",
+      "flightNumber": "UA 416",
+      "baggageTag": "B123458",
+      "status": "Missing",
+      "lastLocation": "Dubai Terminal 3"
+    },
+    {
+      "passengerName": "John Brown",
+      "pnrNumber": "UB0954",
+      "flightNumber": "AE 783",
+      "baggageTag": "B123459",
+      "status": "In Transit",
+      "lastLocation": "Dubai Terminal 3"
+    },
+    {
+      "passengerName": "Mark Bridge",
+      "pnrNumber": "PAC414",
+      "flightNumber": "UA 574",
+      "baggageTag": "B123460",
+      "status": "In Transit",
+      "lastLocation": "London Terminal 1"
+    },
+    {
+      "passengerName": "Alex Staunbert",
+      "pnrNumber": "UB5607",
+      "flightNumber": "DL 430",
+      "baggageTag": "B123461",
+      "status": "Missing",
+      "lastLocation": "London Terminal 1"
+    },
+    {
+      "passengerName": "Tom Munzar",
+      "pnrNumber": "NVA248",
+      "flightNumber": "AB 468",
+      "baggageTag": "B123462",
+      "status": "Delivered",
+      "lastLocation": "London Terminal 1"
+    },
+    {
+      "passengerName": "James Taggy",
+      "pnrNumber": "UA4534",
+      "flightNumber": "CT 586",
+      "baggageTag": "B123463",
+      "status": "Delivered",
+      "lastLocation": "London Terminal 1"
+    }
+  ]
+  
