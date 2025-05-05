@@ -67,8 +67,8 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex">
-            <div className="hidden lg:flex lg:w-1/2 bg-gray-50 p-12 flex-col">
+        <div className="h-screen flex overflow-hidden">
+            <div className="hidden lg:flex lg:w-1/2 bg-gray-50 p-12 flex-col h-full">
                 <div className="flex items-center gap-2 mb-12">
                     <img src={Logo} alt="Paper Pod Logo" className="h-10 w-10" />
                     <span className="text-2xl font-semibold">Paper Pod</span>
@@ -88,7 +88,7 @@ export default function Login() {
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center items-center p-8 bg-white">
+            <div className="flex-1 flex flex-col justify-center items-center p-8 bg-white h-full">
                 <div className="w-full max-w-md">
                     <h2 className="text-2xl font-semibold mb-2">
                         {isLogin ? 'Welcome Back To Paper Pod!' : 'Create Your Account'}

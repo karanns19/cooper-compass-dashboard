@@ -3,8 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { baggageData } from '../data/BaggageData';
 import { alertsData } from '../data/AlertsData';
 import AirlineBarChart from '../components/ReportPageComponent/AirlineBarchart1Comp';
-import { Eye, Trash2 } from 'lucide-react';
-import { FaPlaneArrival, FaPlaneDeparture, FaPlane, FaClock, FaChartBar, FaSuitcaseRolling, FaSearch, FaBell } from 'react-icons/fa';
+import { Eye, Trash2, ChevronDown } from 'lucide-react';
+import { FaPlaneArrival, FaPlaneDeparture, FaPlane, FaClock, FaChartBar, FaSuitcaseRolling, FaSearch, FaBell, FaArrowRight } from 'react-icons/fa';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,28 +14,32 @@ const flightStatusCards = [
     value: 12,
     update: 'Updates 1 hour ago',
     icon: <FaPlaneArrival size={24} className="text-[#7c3aed]" />,
-    circle: 'bg-[#f3f0ff] text-[#7c3aed]'
+    circle: 'bg-[#f3f0ff] text-[#7c3aed]',
+    filter: 'Arrived',
   },
   {
     label: 'Scheduled Flights',
     value: 20,
     update: 'Updates 2 hour ago',
     icon: <FaPlaneDeparture size={24} className="text-[#22c55e]" />,
-    circle: 'bg-[#f0fdf4] text-[#22c55e]'
+    circle: 'bg-[#f0fdf4] text-[#22c55e]',
+    filter: 'Scheduled',
   },
   {
     label: 'Flights in air',
     value: 30,
     update: 'Updates 1 hour ago',
     icon: <FaPlane size={24} className="text-[#0ea5e9]" />,
-    circle: 'bg-[#f0f9ff] text-[#0ea5e9]'
+    circle: 'bg-[#f0f9ff] text-[#0ea5e9]',
+    filter: 'Flights in Air',
   },
   {
     label: 'Delayed Flights',
     value: 20,
     update: 'Updates 1 hour ago',
     icon: <FaClock size={24} className="text-[#eab308]" />,
-    circle: 'bg-[#fef9c3] text-[#eab308]'
+    circle: 'bg-[#fef9c3] text-[#eab308]',
+    filter: 'Delayed',
   }
 ];
 
@@ -50,7 +54,7 @@ const featureCards = [
   },
   {
     label: 'Track',
-    desc: 'Track your baggage effortlessly all in one place.',
+    desc: 'Track passenger baggage effortlessly all in one place.',
     icon: <FaSuitcaseRolling size={32} className="text-[#a78bfa]" />,
     bg: 'bg-[#f3e8ff]',
     circle: 'bg-[#e9d5ff] border border-[#a78bfa] text-[#a78bfa]',
@@ -78,6 +82,8 @@ export default function Home() {
   const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const statusOptions = ['All', 'Delivered', 'In Transit', 'Missing'];
   const navigate = useNavigate();
 
   const filteredBaggage = baggageData.filter(b => {
@@ -107,14 +113,19 @@ export default function Home() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6 mb-8">
         {flightStatusCards.map((card, i) => (
-          <div key={i} className="bg-white rounded-2xl p-6 shadow-sm flex flex-col gap-2 min-w-[220px]">
+          <div
+            key={i}
+            className="bg-white rounded-2xl p-6 shadow-sm flex flex-col gap-2 min-w-[220px] cursor-pointer relative transition-shadow hover:shadow-md group"
+            onClick={() => navigate('/flight-details', { state: { status: card.filter } })}
+          >
             <div className="flex items-center gap-3 mb-2">
               <div className={`flex items-center justify-center w-10 h-10 rounded-full ${card.circle}`}>{card.icon}</div>
               <span className="font-semibold text-lg text-[#23223a]">{card.label}</span>
             </div>
             <div className="border-b border-[#e5e7eb] my-2"></div>
-            <div className="text-2xl font-extrabold text-[#18181b] mb-1">{card.value} Flights</div>
+            <div className="text-xl font-extrabold text-[#18181b] mb-1">{card.value} Flights</div>
             <div className="text-xs text-gray-400 font-medium">{card.update}</div>
+            <FaArrowRight className="absolute bottom-7 right-4 text-gray-300 group-hover:text-[#432143] transition-colors" size={20} />
           </div>
         ))}
       </div>
@@ -128,7 +139,7 @@ export default function Home() {
           >
             <div className={`flex items-center justify-center w-16 h-16 rounded-full mb-4 ${card.circle}`}>{card.icon}</div>
             <div className="font-bold text-xl text-[#23223a] mb-2 text-center">{card.label}</div>
-            <div className="text-center text-base" style={{ color: card.icon.props.className?.includes('text-[#a3a33c]') ? '#a3a33c' : '#2563eb' }}>{card.desc}</div>
+            <div className="text-center text-base text-xs" style={{ color: card.icon.props.className?.includes('text-[#a3a33c]') ? '#a3a33c' : '#2563eb' }}>{card.desc}</div>
           </div>
         ))}
       </div>
@@ -196,25 +207,41 @@ export default function Home() {
       <div className="bg-white rounded-xl shadow p-6 mt-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
           <div className="font-semibold text-lg">Track Baggage</div>
-          <div className="flex gap-2 items-center w-full md:w-auto">
+          <div className="flex gap-2 items-center w-full md:w-auto justify-end">
             <input
               type="text"
               placeholder="Search"
-              className="border border-gray-200 rounded-lg px-4 py-2 w-full md:w-64"
+              className="border border-gray-300 rounded px-3 py-2 text-sm w-full md:w-64 text-left"
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
-            <select
-              className="border border-gray-200 rounded-lg px-3 py-2"
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-            >
-              <option value="All">Status</option>
-              <option value="Delivered">Delivered</option>
-              <option value="In Transit">In Transit</option>
-              <option value="Missing">Missing</option>
-            </select>
-            <button className="border border-gray-200 rounded-lg px-2 py-2 text-gray-500"><span className="text-xl">⋮</span></button>
+            <div className="relative">
+              <button
+                className="px-4 py-2 border border-gray-200 rounded-lg flex items-center gap-2 text-left"
+                onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                type="button"
+                style={{ minWidth: 120 }}
+              >
+                {statusFilter === 'All' ? 'Status' : statusFilter}
+                <ChevronDown className="h-4 w-4 ml-auto" />
+              </button>
+              {isStatusDropdownOpen && (
+                <div className="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-10 text-left">
+                  {statusOptions.map(option => (
+                    <button
+                      key={option}
+                      className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                      onClick={() => {
+                        setStatusFilter(option);
+                        setIsStatusDropdownOpen(false);
+                      }}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto rounded-lg">

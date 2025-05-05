@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
@@ -6,6 +6,7 @@ import Login from '../Pages/Login'
 
 // Import page components
 import Home from '../Pages/Home'
+import FlightDetails from '../Pages/FlightDetails'
 import TrackBaggage from '../Pages/TrackBaggage'
 import LostAndFound from '../Pages/LostAndFound'
 import Alerts from '../Pages/Alerts'
@@ -13,6 +14,7 @@ import Reports from '../Pages/Reports'
 import Profile from '../Pages/Profile'
 import Settings from '../Pages/Settings'
 import TransferHub from '../Pages/TransferHub'
+import Help from '../Pages/Help'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
@@ -43,6 +45,7 @@ export default function AppRouter() {
         }
       >
         <Route path="home" element={<Home />} />
+        <Route path="flight-details" element={<FlightDetails />} />
         <Route path="track-baggage" element={<TrackBaggage />} />
         <Route path="transfer-hub" element={<TransferHub />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
@@ -50,7 +53,7 @@ export default function AppRouter() {
         <Route path="reports" element={<Reports />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
-
+        <Route path="help" element={<Help />} />
         {/* Redirect to home if no match found */}
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>

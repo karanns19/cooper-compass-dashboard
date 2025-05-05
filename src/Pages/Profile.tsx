@@ -8,7 +8,7 @@ function Modal({ open, onClose, title, children }: { open: boolean, onClose: () 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
-        <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+        <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl cursor-pointer">&times;</button>
         <div className="text-lg font-semibold mb-4">{title}</div>
         <div>{children}</div>
       </div>
@@ -163,10 +163,10 @@ export default function Profile() {
             <div className="p-8 mt-8">
                 <div className="font-bold text-xl mb-4">Settings</div>
                 <div className="flex flex-col gap-2 text-[#222]">
-                    <button className="text-left py-1 px-1 rounded transition focus:outline-none" style={{ fontWeight: 500 }} onClick={() => setShowEdit(true)}>Edit Profile</button>
-                    <button className="text-left py-1 px-1 rounded transition focus:outline-none" style={{ fontWeight: 500 }} onClick={() => setShowPassword(true)}>Change Password</button>
-                    <button className="text-left py-1 px-1 rounded transition focus:outline-none" style={{ fontWeight: 500 }} onClick={() => setShowNotifications(true)}>Notification Settings</button>
-                    <button className="text-left py-1 px-1 rounded transition focus:outline-none text-red-500" style={{ fontWeight: 500 }} onClick={handleLogout}>Logout</button>
+                    <button className="text-left py-1 px-1 rounded transition focus:outline-none cursor-pointer" style={{ fontWeight: 500 }} onClick={() => setShowEdit(true)}>Edit Profile</button>
+                    <button className="text-left py-1 px-1 rounded transition focus:outline-none cursor-pointer" style={{ fontWeight: 500 }} onClick={() => setShowPassword(true)}>Change Password</button>
+                    <button className="text-left py-1 px-1 rounded transition focus:outline-none cursor-pointer" style={{ fontWeight: 500 }} onClick={() => setShowNotifications(true)}>Notification Settings</button>
+                    <button className="text-left py-1 px-1 rounded transition focus:outline-none text-red-500 cursor-pointer" style={{ fontWeight: 500 }} onClick={handleLogout}>Logout</button>
                 </div>
             </div>
             </div>
@@ -202,8 +202,8 @@ export default function Profile() {
                             />
                         </div>
                         <div className="flex gap-2 mt-4">
-                            <button type="submit" className="px-4 py-2 bg-[#432143] text-white rounded-lg hover:bg-[#532153]">Save</button>
-                            <button type="button" className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50" onClick={() => setShowEdit(false)}>Cancel</button>
+                            <button type="submit" className="px-4 py-2 bg-[#432143] text-white rounded-lg hover:bg-[#532153] cursor-pointer">Save</button>
+                            <button type="button" className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => setShowEdit(false)}>Cancel</button>
                         </div>
                     </form>
                 </Modal>
@@ -240,8 +240,8 @@ export default function Profile() {
                             />
                         </div>
                         <div className="flex gap-2 mt-4">
-                            <button type="submit" className="px-4 py-2 bg-[#432143] text-white rounded-lg hover:bg-[#532153]">Update</button>
-                            <button type="button" className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50" onClick={() => setShowPassword(false)}>Cancel</button>
+                            <button type="submit" className="px-4 py-2 bg-[#432143] text-white rounded-lg hover:bg-[#532153] cursor-pointer">Update</button>
+                            <button type="button" className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => setShowPassword(false)}>Cancel</button>
                         </div>
                     </form>
                 </Modal>
@@ -267,7 +267,7 @@ export default function Profile() {
                             <Toggle checked={settings.dailyReportEmail} onChange={(val: boolean) => handleSettingChange('dailyReportEmail', val)} />
                         </div>
                         <div className="flex gap-2 mt-4">
-                            <button type="button" className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50" onClick={() => setShowNotifications(false)}>Close</button>
+                            <button type="button" className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => setShowNotifications(false)}>Close</button>
                         </div>
                     </div>
                 </Modal>

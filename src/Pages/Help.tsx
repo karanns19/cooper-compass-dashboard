@@ -62,7 +62,17 @@ const others = [
   { label: 'Need Assistance?', modalTitle: 'Need Assistance?', modalContent: 'For any assistance, reach out to our helpdesk or use the chat support.' },
 ];
 
-function Modal({ open, onClose, title, children }) {
+function Modal({ 
+  open,
+  onClose,
+  title,
+  children
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
@@ -75,9 +85,9 @@ function Modal({ open, onClose, title, children }) {
   );
 }
 
-export default function HelpPage() {
+export default function Help() {
   const [selected, setSelected] = useState(2);
-  const [openFaq, setOpenFaq] = useState(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [modal, setModal] = useState({ open: false, title: '', content: '' });
 
   // Tab modal content

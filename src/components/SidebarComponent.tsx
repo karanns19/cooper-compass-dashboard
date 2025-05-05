@@ -17,6 +17,8 @@ import HelpIconWhite from '../assets/icons/help_white.png'
 import Logo from '../assets/logo.png'
 import TransferHubIcon from "../assets/icons/transferHubIcon.png"
 import TransferHubIconWhite from "../assets/icons/transferHubIconWhite.png"
+import FlightDetailsIcon from "../assets/icons/flight.png"
+import FlightDetailsIconWhite from "../assets/icons/flight_white.png"
 
 
 interface NavItem {
@@ -32,6 +34,7 @@ interface SidebarProps {
 
 const navItems: NavItem[] = [
   { label: 'Home', icon: HomeIcon, whiteIcon: HomeWhiteIcon, to: '/home' },
+  { label: 'Flight Details', icon: FlightDetailsIcon, whiteIcon: FlightDetailsIconWhite, to: '/flight-details' },
   { label: 'Track Baggage', icon: TrackBaggageIcon, whiteIcon: TrackBaggageWhiteIcon, to: '/track-baggage' },
   { label: 'Transfer Hub', icon: TransferHubIcon, whiteIcon: TransferHubIconWhite, to: '/transfer-hub' },
   { label: 'Lost and Found', icon: LostAndFoundIcon, whiteIcon: LostAndFoundIconWhite, to: '/lost-and-found' },
@@ -58,11 +61,11 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
     >
       {({ isActive }) => (
         <>
-          <img
-            src={isActive && item.whiteIcon ? item.whiteIcon : item.icon}
-            alt={item.label}
-            className="h-6 w-6"
-          />
+            <img
+              src={isActive && item.whiteIcon ? item.whiteIcon : item.icon}
+              alt={item.label}
+              className="h-6 w-6"
+            />
           {/* Remove text completely when collapsed */}
           {!isCollapsed && (
             <span className="whitespace-nowrap transition-all duration-300 md:text-sm lg:text-md">

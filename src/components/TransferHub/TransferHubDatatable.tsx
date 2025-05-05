@@ -1,27 +1,20 @@
 /* eslint-disable @typescript-eslint/prefer-as-const */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { dummyData, BaggageData } from '../../data/TransferHubData.ts';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye } from 'lucide-react';
-import ExpandedRow from './ExpandRows.tsx';
 
 export default function Page() {
   const [data, setData] = useState(dummyData);
   const [selectedRow, setSelectedRow] = useState<BaggageData | null>(null);
   const [statusUpdateVisible, setStatusUpdateVisible] = useState(false);
   const [statusUpdate, setStatusUpdate] = useState<{ status: 'Pending' | 'Issue' | 'Completed'; remark: string }>({ status: 'Pending', remark: '' });
-  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
 
   const statusColors = {
     Pending: 'bg-yellow-100 text-yellow-700',
     Issue: 'bg-red-100 text-red-700',
     Completed: 'bg-green-100 text-green-700',
-  };
-
-  const handleRowExpandToggled = (expanded: boolean, row: any) => {
-    setExpandedRows((prev) => ({ ...prev, [row.id]: expanded }));
   };
 
   const handleStatusUpdate = () => {
@@ -67,7 +60,7 @@ export default function Page() {
     {
       name: 'Action',
       cell: (row) => (
-        <div className="flex gap-3">
+        <div className="flex justify-center items-center w-full h-full">
           <Eye
             className="cursor-pointer text-blue-500 hover:text-blue-700"
             onClick={() => {
@@ -78,6 +71,8 @@ export default function Page() {
           />
         </div>
       ),
+      width: '80px',
+      center: true,
     },
     { name: 'Comments', selector: (row) => row.comments, grow: 2 },
   ];
@@ -100,10 +95,6 @@ export default function Page() {
               },
             }
           }}
-          expandableRows
-          expandableRowsComponent={ExpandedRow}
-          expandableRowExpanded={(row) => !!expandedRows[row.id]}
-          onRowExpandToggled={handleRowExpandToggled}
         />
       </div>
 
