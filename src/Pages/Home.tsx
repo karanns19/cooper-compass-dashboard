@@ -147,15 +147,16 @@ export default function Home() {
       <div className="flex flex-col lg:flex-row gap-6 mb-8">
         <div className="flex-1 bg-white rounded-xl shadow p-6">
           <div className="flex justify-between items-center mb-2">
-            <div className="font-semibold text-lg">Airline vs Baggage Volume</div>
-            <button className="px-3 py-1 border rounded-lg text-sm text-gray-600 flex items-center gap-1">View by Week <span>▼</span></button>
+            <div className="font-semibold text-lg">
+              {user?.role === 'Airport Staff' ? 'Airline vs Baggage Volume' : 'Airport vs Baggage Volume'}
+            </div>
+            <button className="px-3 py-1 border rounded-lg text-sm text-gray-600 flex items-center gap-1">View by Week <ChevronDown size={16} /></button>
           </div>
           <AirlineBarChart />
         </div>
         <div className="w-full lg:w-[350px] bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
           <div className="flex justify-between items-center mb-2">
             <div className="font-bold text-lg text-[#23223a]">Alerts</div>
-            <button className="text-gray-400 border border-[#e5e7eb] rounded-lg p-1"><span className="text-2xl">⋮</span></button>
           </div>
           <div className="flex gap-2 text-sm text-[#23223a] mb-2 font-medium">
             {[15,16,17,18,19,20,21].map((d,i) => (

@@ -3,10 +3,12 @@ import DataTable from 'react-data-table-component';
 import { ChevronDown } from 'lucide-react';
 import { FaPlane } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 interface Flight {
   flightNumber: string;
-  airline: string;
+  airline?: string;
+  airport?: string;
   status: 'Scheduled' | 'Arrived' | 'Delayed' | 'Flights in Air';
   departureTime: string;
   arrivalTime: string;
@@ -14,7 +16,7 @@ interface Flight {
   direction: 'Arrival' | 'Departure';
 }
 
-const dummyFlights: Flight[] = [
+const dummyFlightsAirline: Flight[] = [
   {
     flightNumber: 'AA 100',
     airline: 'Air India',
@@ -89,6 +91,81 @@ const dummyFlights: Flight[] = [
   },
 ];
 
+const dummyFlightsAirport: Flight[] = [
+  {
+    flightNumber: 'BLR 101',
+    airport: 'Bengaluru',
+    status: 'Scheduled',
+    departureTime: '2025-05-04 09:00 UTC',
+    arrivalTime: '2025-05-04 13:00 UTC',
+    counterpartAirport: 'DEL (Delhi)',
+    direction: 'Arrival',
+  },
+  {
+    flightNumber: 'BOM 202',
+    airport: 'Mumbai',
+    status: 'Arrived',
+    departureTime: '2025-05-04 11:30 UTC',
+    arrivalTime: '2025-05-04 15:45 UTC',
+    counterpartAirport: 'HYD (Hyderabad)',
+    direction: 'Departure',
+  },
+  {
+    flightNumber: 'DEL 303',
+    airport: 'Delhi',
+    status: 'Delayed',
+    departureTime: '2025-05-04 17:00 UTC',
+    arrivalTime: '2025-05-04 21:25 UTC',
+    counterpartAirport: 'CCU (Kolkata)',
+    direction: 'Arrival',
+  },
+  {
+    flightNumber: 'HYD 404',
+    airport: 'Hyderabad',
+    status: 'Flights in Air',
+    departureTime: '2025-05-04 06:50 UTC',
+    arrivalTime: '2025-05-04 10:15 UTC',
+    counterpartAirport: 'BOM (Mumbai)',
+    direction: 'Arrival',
+  },
+  {
+    flightNumber: 'CCU 505',
+    airport: 'Kolkata',
+    status: 'Flights in Air',
+    departureTime: '2025-05-04 12:00 UTC',
+    arrivalTime: '2025-05-04 18:30 UTC',
+    counterpartAirport: 'BLR (Bengaluru)',
+    direction: 'Departure',
+  },
+  {
+    flightNumber: 'BLR 606',
+    airport: 'Bengaluru',
+    status: 'Delayed',
+    departureTime: '2025-05-04 14:25 UTC',
+    arrivalTime: '2025-05-04 18:40 UTC',
+    counterpartAirport: 'DEL (Delhi)',
+    direction: 'Departure',
+  },
+  {
+    flightNumber: 'BOM 707',
+    airport: 'Mumbai',
+    status: 'Arrived',
+    departureTime: '2025-05-04 08:10 UTC',
+    arrivalTime: '2025-05-04 12:55 UTC',
+    counterpartAirport: 'HYD (Hyderabad)',
+    direction: 'Arrival',
+  },
+  {
+    flightNumber: 'DEL 808',
+    airport: 'Delhi',
+    status: 'Scheduled',
+    departureTime: '2025-05-04 15:25 UTC',
+    arrivalTime: '2025-05-04 17:35 UTC',
+    counterpartAirport: 'CCU (Kolkata)',
+    direction: 'Departure',
+  },
+];
+
 const statusColors: Record<Flight['status'], string> = {
   'Scheduled': 'bg-green-100 text-green-700',
   'Arrived': 'bg-purple-100 text-purple-700',
@@ -103,54 +180,9 @@ const statusDotColors: Record<Flight['status'], string> = {
   'Flights in Air': 'bg-blue-400',
 };
 
-const columns = [
-  {
-    name: 'Flight Number',
-    selector: (row: Flight) => row.flightNumber,
-    sortable: true,
-  },
-  {
-    name: 'Airline',
-    selector: (row: Flight) => row.airline,
-    sortable: true,
-  },
-  {
-    name: 'Status',
-    selector: (row: Flight) => row.status,
-    sortable: true,
-    cell: (row: Flight) => (
-      <span className={`flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${statusColors[row.status]}`}
-        style={{ minWidth: 90 }}
-      >
-        <span className={`w-2 h-2 rounded-full ${statusDotColors[row.status]}`}></span>
-        {row.status}
-      </span>
-    ),
-  },
-  {
-    name: 'Departure Time',
-    selector: (row: Flight) => row.departureTime,
-    sortable: true,
-  },
-  {
-    name: 'Arrival Time',
-    selector: (row: Flight) => row.arrivalTime,
-    sortable: true,
-  },
-  {
-    name: 'Counterpart Airport',
-    selector: (row: Flight) => row.counterpartAirport,
-    sortable: true,
-  },
-  {
-    name: 'Direction',
-    selector: (row: Flight) => row.direction,
-    sortable: true,
-  },
-];
-
 export default function FlightDetailsTable() {
   const location = useLocation();
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState(location.state?.status || 'All');
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -162,14 +194,111 @@ export default function FlightDetailsTable() {
     }
   }, [location.state]);
 
-  const filteredData = dummyFlights.filter(f => {
+  // Choose data based on user role
+  const data = user?.role === 'Airport Staff' ? dummyFlightsAirline : dummyFlightsAirport;
+
+  const filteredData = data.filter(f => {
     const matchesSearch =
-      f.flightNumber.toLowerCase().includes(search.toLowerCase()) ||
-      f.airline.toLowerCase().includes(search.toLowerCase()) ||
-      f.counterpartAirport.toLowerCase().includes(search.toLowerCase());
+      (f.flightNumber.toLowerCase().includes(search.toLowerCase()) ||
+      (f.airline && f.airline.toLowerCase().includes(search.toLowerCase())) ||
+      (f.airport && f.airport.toLowerCase().includes(search.toLowerCase())) ||
+      f.counterpartAirport.toLowerCase().includes(search.toLowerCase()));
     const matchesStatus = status === 'All' || f.status === status;
     return matchesSearch && matchesStatus;
   });
+
+  // Columns based on user role
+  const columns = user?.role === 'Airport Staff'
+    ? [
+      {
+        name: 'Flight Number',
+        selector: (row: Flight) => row.flightNumber,
+        sortable: true,
+      },
+      {
+        name: 'Airline',
+        selector: (row: Flight) => row.airline || '',
+        sortable: true,
+      },
+      {
+        name: 'Status',
+        selector: (row: Flight) => row.status,
+        sortable: true,
+        cell: (row: Flight) => (
+          <span className={`flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${statusColors[row.status]}`}
+            style={{ minWidth: 90 }}
+          >
+            <span className={`w-2 h-2 rounded-full ${statusDotColors[row.status]}`}></span>
+            {row.status}
+          </span>
+        ),
+      },
+      {
+        name: 'Departure Time',
+        selector: (row: Flight) => row.departureTime,
+        sortable: true,
+      },
+      {
+        name: 'Arrival Time',
+        selector: (row: Flight) => row.arrivalTime,
+        sortable: true,
+      },
+      {
+        name: 'Counterpart Airport',
+        selector: (row: Flight) => row.counterpartAirport,
+        sortable: true,
+      },
+      {
+        name: 'Direction',
+        selector: (row: Flight) => row.direction,
+        sortable: true,
+      },
+    ]
+    : [
+      {
+        name: 'Flight Number',
+        selector: (row: Flight) => row.flightNumber,
+        sortable: true,
+      },
+      {
+        name: 'Airport',
+        selector: (row: Flight) => row.airport || '',
+        sortable: true,
+      },
+      {
+        name: 'Status',
+        selector: (row: Flight) => row.status,
+        sortable: true,
+        cell: (row: Flight) => (
+          <span className={`flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${statusColors[row.status]}`}
+            style={{ minWidth: 90 }}
+          >
+            <span className={`w-2 h-2 rounded-full ${statusDotColors[row.status]}`}></span>
+            {row.status}
+          </span>
+        ),
+      },
+      {
+        name: 'Departure Time',
+        selector: (row: Flight) => row.departureTime,
+        sortable: true,
+      },
+      {
+        name: 'Arrival Time',
+        selector: (row: Flight) => row.arrivalTime,
+        sortable: true,
+      },
+      {
+        name: 'Counterpart Airport',
+        selector: (row: Flight) => row.counterpartAirport,
+        sortable: true,
+      },
+      {
+        name: 'Direction',
+        selector: (row: Flight) => row.direction,
+        sortable: true,
+      },
+    ];
 
   return (
     <div className="p-6">
@@ -184,7 +313,7 @@ export default function FlightDetailsTable() {
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-xl shadow p-6 mt-8">
+      <div className="bg-white rounded-xl shadow p-6 mt-4">
         <div className="flex items-center justify-between mb-4">
           <div className="font-semibold text-lg">Track Flight</div>
           <div className="flex gap-2 w-full md:w-auto justify-end">

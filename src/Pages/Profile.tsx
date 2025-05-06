@@ -143,19 +143,19 @@ export default function Profile() {
                 <div className="bg-white rounded-2xl shadow p-8 flex-1 min-w-[320px]">
                     <div className="font-bold text-xl mb-4">Personal Information</div>
                     <div className="border-t pt-6 space-y-6">
-                        <div className="text-gray-400 text-xl font-semibold">Name: <span className="text-black font-normal">{user.firstName} {user.lastName}</span></div>
-                        <div className="text-gray-400 text-xl font-semibold">Employee ID: <span className="text-black font-normal">{user.employeeId}</span></div>
-                        <div className="text-gray-400 text-xl font-semibold">Role: <span className="text-black font-normal">{user.role}</span></div>
-                        <div className="text-gray-400 text-xl font-semibold">Location: <span className="text-black font-normal">{user.location}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Name: <span className="text-black font-normal">{user.firstName} {user.lastName}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Employee ID: <span className="text-black font-normal">{user.employeeId}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Role: <span className="text-black font-normal">{user.role}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Location: <span className="text-black font-normal">{user.location}</span></div>
                     </div>
                 </div>
                 <div className="bg-white rounded-2xl shadow p-8 flex-1 min-w-[320px]">
                     <div className="font-bold text-xl mb-4">Work Summary</div>
                     <div className="border-t pt-6 space-y-6">
-                        <div className="text-gray-400 text-xl font-semibold">Baggage Handled Today: <span className="text-black font-normal">{user.workSummary.baggageHandledToday} Bags</span></div>
-                        <div className="text-gray-400 text-xl font-semibold">Baggage Lost Cases: <span className="text-black font-normal">{user.workSummary.baggageLostCases} Cases</span></div>
-                        <div className="text-gray-400 text-xl font-semibold">Baggage Transfer Updates: <span className="text-black font-normal">{user.workSummary.baggageTransferUpdates} Transfers</span></div>
-                        <div className="text-gray-400 text-xl font-semibold">Average Resolution Time: <span className="text-black font-normal">{user.workSummary.averageResolutionTime} Minutes</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Baggage Handled Today: <span className="text-black font-normal">{user.workSummary.baggageHandledToday} Bags</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Baggage Lost Cases: <span className="text-black font-normal">{user.workSummary.baggageLostCases} Cases</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Baggage Transfer Updates: <span className="text-black font-normal">{user.workSummary.baggageTransferUpdates} Transfers</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Average Resolution Time: <span className="text-black font-normal">{user.workSummary.averageResolutionTime} Minutes</span></div>
                     </div>
                 </div>
             </div>

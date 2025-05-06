@@ -28,21 +28,22 @@ export interface User {
 
 // Dummy test users
 export const testUsers: User[] = [
+    // Airport Staff (Bengaluru Airport)
     {
         id: '1',
-        email: 'test_user1@paperpod.com',
-        password: 'Test@123',
+        email: 'test_airport@paperpod.com',
+        password: 'Airport@123',
         firstName: 'Test',
-        lastName: 'User1',
+        lastName: 'Airport',
         profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
-        role: 'Supervisor',
-        employeeId: 'AIR12345',
-        location: 'Terminal 2, Chennai International Airport',
+        role: 'Airport Staff',
+        employeeId: 'BLR10001',
+        location: 'Kempegowda International Airport, Bengaluru',
         workSummary: {
-            baggageHandledToday: 124,
-            baggageLostCases: 3,
-            baggageTransferUpdates: 17,
-            averageResolutionTime: 22
+            baggageHandledToday: 210,
+            baggageLostCases: 2,
+            baggageTransferUpdates: 25,
+            averageResolutionTime: 19
         },
         settings: {
             emailNotifications: true,
@@ -51,21 +52,22 @@ export const testUsers: User[] = [
             dailyReportEmail: true
         }
     },
+    // Airline Staff (Akasa Air)
     {
         id: '2',
-        email: 'test_user2@paperpod.com',
-        password: 'Test@123',
+        email: 'test_airline@paperpod.com',
+        password: 'Airline@123',
         firstName: 'Test',
-        lastName: 'User2',
-        profileImage: 'https://randomuser.me/api/portraits/men/2.jpg',
-        role: 'Handler',
-        employeeId: 'AIR12346',
-        location: 'Terminal 1, Chennai International Airport',
+        lastName: 'Airline',
+        profileImage: 'https://randomuser.me/api/portraits/men/1.jpg',
+        role: 'Airline Staff',
+        employeeId: 'AKASA20001',
+        location: 'Akasa Air, Bengaluru Hub',
         workSummary: {
-            baggageHandledToday: 85,
-            baggageLostCases: 1,
-            baggageTransferUpdates: 12,
-            averageResolutionTime: 18
+            baggageHandledToday: 95,
+            baggageLostCases: 0,
+            baggageTransferUpdates: 8,
+            averageResolutionTime: 15
         },
         settings: {
             emailNotifications: true,

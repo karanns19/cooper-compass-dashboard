@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useAuth } from '../../context/AuthContext';
 
 interface ChartData {
-  airline: string;
+  name: string;
   score: number;
 }
 
+const airlineTestData: ChartData[] = [
+  { name: 'Air India', score: 18 },
+  { name: 'Vistara', score: 14 },
+  { name: 'Indigo', score: 12 },
+  { name: 'Emirates', score: 7 },
+  { name: 'American', score: 2 },
+];
+
+const airportTestData: ChartData[] = [
+  { name: 'Bengaluru', score: 20 },
+  { name: 'Mumbai', score: 17 },
+  { name: 'Delhi', score: 14 },
+  { name: 'Hyderabad', score: 11 },
+  { name: 'Kolkata', score: 8 },
+];
+
 const AirlineHorizontalBarChart: React.FC = () => {
+  const { user } = useAuth();
   const [data, setData] = useState<ChartData[]>([]);
 
   useEffect(() => {
-    const mockData: ChartData[] = [
-        { airline: 'Air India', score: 18 },
-        { airline: 'Vistara', score: 14 },
-      { airline: 'Indigo', score: 12 },
-      { airline: 'Emirates', score: 7 },
-      { airline: 'American', score: 2 },
-    ];
-    setData(mockData);
-  }, []);
+    setData(user?.role === 'Airport Staff' ? airlineTestData : airportTestData);
+  }, [user?.role]);
 
   const chartOptions = {
     chart: {
@@ -27,7 +38,7 @@ const AirlineHorizontalBarChart: React.FC = () => {
       width: 350,
     },
     title: {
-      text: 'Flight Count',
+      text: user?.role === 'Airport Staff' ? 'Flight Count (Airlines)' : 'Flight Count (Airports)',
       align: 'left',
       style: {
         fontSize: '16px',
@@ -35,7 +46,7 @@ const AirlineHorizontalBarChart: React.FC = () => {
       },
     },
     xAxis: {
-      categories: data.map((item) => item.airline),
+      categories: data.map((item) => item.name),
       title: {
         text: null,
       },
