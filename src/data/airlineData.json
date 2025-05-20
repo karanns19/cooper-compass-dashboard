@@ -1,27 +1,79 @@
-[
   {
-    "airline": "Indigo",
-    "handled": 800,
-    "missed": 200
+  "airlines": [
+    {
+      "id": "6E",
+      "name": "IndiGo",
+      "code": "6E",
+      "hub": "DEL",
+      "fleet": ["A320", "A321", "ATR72"],
+      "routes": [
+        {
+          "from": "BLR",
+          "to": "DEL",
+          "flightNumber": "6E-123",
+          "departureTime": "10:00",
+          "arrivalTime": "12:30",
+          "frequency": "Daily"
+        },
+        {
+          "from": "DEL",
+          "to": "BOM",
+          "flightNumber": "6E-456",
+          "departureTime": "13:00",
+          "arrivalTime": "15:00",
+          "frequency": "Daily"
+        }
+      ]
   },
   {
-    "airline": "American",
-    "handled": 600,
-    "missed": 150
+      "id": "AI",
+      "name": "Air India",
+      "code": "AI",
+      "hub": "DEL",
+      "fleet": ["B787", "A320", "B777"],
+      "routes": [
+        {
+          "from": "DEL",
+          "to": "BOM",
+          "flightNumber": "AI-101",
+          "departureTime": "09:00",
+          "arrivalTime": "11:00",
+          "frequency": "Daily"
   },
   {
-    "airline": "Air India",
-    "handled": 1200,
-    "missed": 300
-  },
-  {
-    "airline": "Emirates",
-    "handled": 900,
-    "missed": 250
-  },
-  {
-    "airline": "Vistara",
-    "handled": 700,
-    "missed": 100
+          "from": "BOM",
+          "to": "BLR",
+          "flightNumber": "AI-102",
+          "departureTime": "12:00",
+          "arrivalTime": "13:30",
+          "frequency": "Daily"
+        }
+      ]
+    },
+    {
+      "id": "SG",
+      "name": "SpiceJet",
+      "code": "SG",
+      "hub": "DEL",
+      "fleet": ["B737", "Q400"],
+      "routes": [
+        {
+          "from": "DEL",
+          "to": "MAA",
+          "flightNumber": "SG-201",
+          "departureTime": "08:30",
+          "arrivalTime": "11:00",
+          "frequency": "Daily"
+        },
+        {
+          "from": "MAA",
+          "to": "BLR",
+          "flightNumber": "SG-202",
+          "departureTime": "12:00",
+          "arrivalTime": "13:00",
+          "frequency": "Daily"
   }
-] 
+      ]
+    }
+  ]
+} 

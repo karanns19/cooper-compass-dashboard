@@ -11,11 +11,20 @@ const statusColors: Record<string, string> = {
   Delivered: "bg-green-100 text-green-700",
   "In Transit": "bg-blue-100 text-blue-700",
   Missing: "bg-red-100 text-red-700",
+  "Security Hold": "bg-yellow-100 text-yellow-700",
+  Transfer: "bg-purple-100 text-purple-700",
+  Loading: "bg-orange-100 text-orange-700",
+  Unloaded: "bg-gray-100 text-gray-700"
 };
+
 const statusDotColors: Record<string, string> = {
   Delivered: "bg-green-400",
   "In Transit": "bg-blue-400",
   Missing: "bg-red-400",
+  "Security Hold": "bg-yellow-400",
+  Transfer: "bg-purple-400",
+  Loading: "bg-orange-400",
+  Unloaded: "bg-gray-400"
 };
 
 export const BaggageTable = () => {
@@ -23,7 +32,7 @@ export const BaggageTable = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All");
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const statusOptions = ["All", "Delivered", "In Transit", "Missing"];
+  const statusOptions = ["All", "Delivered", "In Transit", "Missing", "Security Hold", "Transfer", "Loading", "Unloaded"];
 
   const filteredData = baggageData.filter((row) => {
     const searchLower = search.toLowerCase();
@@ -31,7 +40,9 @@ export const BaggageTable = () => {
       row.passengerName.toLowerCase().includes(searchLower) ||
       row.pnrNumber.toLowerCase().includes(searchLower) ||
       row.flightNumber.toLowerCase().includes(searchLower) ||
-      row.baggageTag.toLowerCase().includes(searchLower);
+      row.baggageTag.toLowerCase().includes(searchLower) ||
+      row.currentAirport.toLowerCase().includes(searchLower) ||
+      row.destinationAirport.toLowerCase().includes(searchLower);
     const matchesStatus = status === "All" || row.status === status;
     return matchesSearch && matchesStatus;
   });
@@ -46,6 +57,11 @@ export const BaggageTable = () => {
       button: true,
     },
     {
+      name: "Passenger Name",
+      selector: (row: BaggageItem) => row.passengerName,
+      sortable: true,
+    },
+    {
       name: "PNR Number",
       selector: (row: BaggageItem) => row.pnrNumber,
       sortable: true,
@@ -56,9 +72,15 @@ export const BaggageTable = () => {
       sortable: true,
     },
     {
-      name: "Baggage Tag Number",
+      name: "Baggage Tag",
       selector: (row: BaggageItem) => row.baggageTag,
       sortable: true,
+    },
+    {
+      name: "Weight (kg)",
+      selector: (row: BaggageItem) => row.weight,
+      sortable: true,
+      cell: (row: BaggageItem) => `${row.weight} kg`,
     },
     {
       name: "Status",
@@ -74,8 +96,13 @@ export const BaggageTable = () => {
       ),
     },
     {
-      name: "Last Location",
+      name: "Current Location",
       selector: (row: BaggageItem) => row.lastLocation,
+      sortable: true,
+    },
+    {
+      name: "Route",
+      selector: (row: BaggageItem) => `${row.currentAirport} → ${row.destinationAirport}`,
       sortable: true,
     },
     {
@@ -85,7 +112,7 @@ export const BaggageTable = () => {
           <button
             onClick={() => setSelectedItem(row)}
             className="text-blue-600 hover:text-blue-800 cursor-pointer"
-            title="View"
+            title="View Details"
           >
             <Eye size={18} />
           </button>
@@ -111,7 +138,7 @@ export const BaggageTable = () => {
         </div>
         <div>
           <h1 className="text-xl font-bold text-[#23223a]">Track Baggage</h1>
-          <p className="text-gray-500 text-sm">Track baggage status</p>
+          <p className="text-gray-500 text-sm">Track baggage status and location</p>
         </div>
         <div className="ml-auto flex gap-2">
           <button className="bg-[#432143] text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold shadow hover:bg-[#321032]">
@@ -121,11 +148,11 @@ export const BaggageTable = () => {
       </div>
       <div className="bg-white rounded-xl shadow p-6 mt-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-          <div className="font-semibold text-lg">Track Baggage</div>
+          <div className="font-semibold text-lg">Baggage Tracking</div>
           <div className="flex gap-2 items-center w-full md:w-auto justify-end">
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search baggage..."
               className="border border-gray-300 rounded px-3 py-2 text-sm w-full md:w-64 text-left"
               value={search}
               onChange={e => setSearch(e.target.value)}

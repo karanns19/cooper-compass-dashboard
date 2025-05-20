@@ -11,11 +11,13 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [employeeId, setEmployeeId] = useState('');
-    const [role, setRole] = useState('Handler');
-    const [location, setLocation] = useState('');
     const [error, setError] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+
+    // Add state variables for new backend fields
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [userType, setUserType] = useState('airport'); // Default to 'airport'
+    const [gender, setGender] = useState('M'); // Default to 'M'
 
     const navigate = useNavigate();
     const { login, signup } = useAuth();
@@ -26,15 +28,15 @@ export default function Login() {
 
         try {
             if (isLogin) {
-                const success = await login(email, password);
+                const success = await login(email, password, userType as 'airport' | 'airline');
                 if (success) {
                     navigate('/home');
                 } else {
                     setError('Invalid email or password');
                 }
             } else {
-                if (!firstName || !lastName || !employeeId || !location) {
-                    setError('Please fill in all fields');
+                if (!firstName || !lastName || !phoneNumber || !userType || !gender) {
+                    setError('Please fill in all required fields');
                     return;
                 }
 
@@ -43,16 +45,9 @@ export default function Login() {
                     password,
                     firstName,
                     lastName,
-                    employeeId,
-                    role,
-                    location,
-                    profileImage: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 100)}.jpg`,
-                    settings: {
-                        emailNotifications: true,
-                        pushNotifications: true,
-                        smsNotifications: false,
-                        dailyReportEmail: true
-                    }
+                    phoneNumber,
+                    userType: userType as 'airport' | 'airline', // Cast to expected union type
+                    gender: gender as 'M' | 'F', // Cast to expected union type
                 });
 
                 if (success) {
@@ -104,6 +99,19 @@ export default function Login() {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {isLogin && (
+                            <div>
+                                <label className="block text-sm font-medium mb-1">User Type</label>
+                                <select
+                                    value={userType}
+                                    onChange={(e) => setUserType(e.target.value)}
+                                    className="w-full p-2 border border-gray-200 rounded-lg"
+                                >
+                                    <option value="airport">Airport</option>
+                                    <option value="airline">Airline</option>
+                                </select>
+                            </div>
+                        )}
                         {!isLogin && (
                             <>
                                 <div className="grid grid-cols-2 gap-4">
@@ -127,34 +135,35 @@ export default function Login() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">Employee ID</label>
+                                    <label className="block text-sm font-medium mb-1">Phone Number</label>
                                     <input
                                         type="text"
-                                        value={employeeId}
-                                        onChange={(e) => setEmployeeId(e.target.value)}
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
                                         className="w-full p-2 border border-gray-200 rounded-lg"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">Role</label>
+                                    <label className="block text-sm font-medium mb-1">User Type</label>
                                     <select
-                                        value={role}
-                                        onChange={(e) => setRole(e.target.value)}
+                                        value={userType}
+                                        onChange={(e) => setUserType(e.target.value)}
                                         className="w-full p-2 border border-gray-200 rounded-lg"
                                     >
-                                        <option value="Handler">Handler</option>
-                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="airport">Airport</option>
+                                        <option value="airline">Airline</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">Location</label>
-                                    <input
-                                        type="text"
-                                        value={location}
-                                        onChange={(e) => setLocation(e.target.value)}
+                                    <label className="block text-sm font-medium mb-1">Gender</label>
+                                    <select
+                                        value={gender}
+                                        onChange={(e) => setGender(e.target.value)}
                                         className="w-full p-2 border border-gray-200 rounded-lg"
-                                        placeholder="e.g., Terminal 2, Chennai International Airport"
-                                    />
+                                    >
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                    </select>
                                 </div>
                             </>
                         )}

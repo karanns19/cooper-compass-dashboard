@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useAuth } from '../context/AuthContext';
 import { baggageData } from '../data/BaggageData';
-import { alertsData } from '../data/AlertsData';
+import { alertsData, AlertStatus } from '../data/AlertsData';
 import AirlineBarChart from '../components/ReportPageComponent/AirlineBarchart1Comp';
 import { Eye, Trash2, ChevronDown } from 'lucide-react';
 import { FaPlaneArrival, FaPlaneDeparture, FaPlane, FaClock, FaChartBar, FaSuitcaseRolling, FaSearch, FaBell, FaArrowRight } from 'react-icons/fa';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AlertService } from '../services/AlertService';
 
 const flightStatusCards = [
   {
@@ -83,8 +84,35 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [alerts, setAlerts] = useState(AlertService.getInstance().getActiveAlerts());
   const statusOptions = ['All', 'Delivered', 'In Transit', 'Missing'];
   const navigate = useNavigate();
+  const alertService = AlertService.getInstance();
+
+  useEffect(() => {
+    if (user) {
+      // Subscribe to alert updates - fetch *all* active alerts when notified
+      const unsubscribe = alertService.subscribe(() => {
+        setAlerts(alertService.getActiveAlerts());
+      });
+
+      // Start background alerts - the service manages its own interval
+      alertService.startBackgroundAlerts();
+
+      return () => {
+        unsubscribe();
+        // Consider if stopping alerts on Home unmount is the desired behavior. 
+        // If we stop here, alerts will stop generating when on other pages.
+        // A better approach might be to only start/stop the simulator if no user is logged in,
+        // or manage it at a higher level component.
+        // For now, we'll keep it running once started if a user is logged in.
+        // alertService.stopBackgroundAlerts();
+      };
+    } else {
+       // Stop background alerts if user logs out while on Home page
+       alertService.stopBackgroundAlerts();
+    }
+  }, [user, alertService]); // Added alertService to dependency array
 
   const filteredBaggage = baggageData.filter(b => {
     const matchesSearch =
@@ -95,14 +123,18 @@ export default function Home() {
     return matchesSearch && matchesStatus;
   });
 
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     Delivered: 'bg-green-100 text-green-700',
     'In Transit': 'bg-blue-100 text-blue-700',
     Missing: 'bg-red-100 text-red-700',
+    active: 'bg-red-100 text-red-700',
+    investigating: 'bg-yellow-100 text-yellow-700',
+    resolved: 'bg-green-100 text-green-700',
+    pending: 'bg-blue-100 text-blue-700'
   };
 
-  const todayAlerts = alertsData.filter(a => a.timestamp.includes('min') || a.timestamp.includes('hour'));
-  const futureAlerts = alertsData.filter(a => !a.timestamp.includes('min') && !a.timestamp.includes('hour'));
+  // Simplify alert display to show recent alerts directly
+  const recentAlertsToShow = alerts.slice(0, 10); // Display up to 10 most recent alerts
 
   return (
     <div className="bg-[#f7f8fa] min-h-screen p-6">
@@ -148,7 +180,7 @@ export default function Home() {
         <div className="flex-1 bg-white rounded-xl shadow p-6">
           <div className="flex justify-between items-center mb-2">
             <div className="font-semibold text-lg">
-              {user?.role === 'Airport Staff' ? 'Airline vs Baggage Volume' : 'Airport vs Baggage Volume'}
+              {user?.userType === 'airport' ? 'Airline vs Baggage Volume' : 'Airport vs Baggage Volume'}
             </div>
             <button className="px-3 py-1 border rounded-lg text-sm text-gray-600 flex items-center gap-1">View by Week <ChevronDown size={16} /></button>
           </div>
@@ -167,8 +199,7 @@ export default function Home() {
             ))}
           </div>
           <div className="max-h-[370px] overflow-y-auto pr-1">
-            <div className="text-xs text-gray-400 font-semibold mb-1 flex items-center gap-2"><span>Today</span><div className="flex-1 border-dotted border-b border-gray-300"></div></div>
-            {todayAlerts.map((alert, _i) => (
+            {recentAlertsToShow.map((alert, _i) => (
               <div
                 key={alert.id}
                 className="flex items-center bg-[#fafbfc] rounded-xl mb-2 p-3 gap-3 shadow-sm border-l-4 cursor-pointer"
@@ -182,25 +213,6 @@ export default function Home() {
                 <div className="text-xs text-gray-400 whitespace-nowrap font-semibold">{alert.timestamp}</div>
               </div>
             ))}
-            {futureAlerts.length > 0 && (
-              <>
-                <div className="text-xs text-gray-400 font-semibold mb-1 flex items-center gap-2 mt-2"><span>Sat, Jan 20</span><div className="flex-1 border-dotted border-b border-gray-300"></div></div>
-                {futureAlerts.map((alert, _i) => (
-                  <div
-                    key={alert.id}
-                    className="flex items-center bg-[#fafbfc] rounded-xl mb-2 p-3 gap-3 shadow-sm border-l-4 cursor-pointer"
-                    style={{ borderColor: '#eab308' }}
-                    onClick={() => navigate('/alerts', { state: { alertId: alert.id } })}
-                  >
-                    <div className="flex-1">
-                      <div className="font-bold text-[#23223a] text-sm mb-1">{alert.title}</div>
-                      <div className="text-xs text-gray-500">{alert.description}</div>
-                    </div>
-                    <div className="text-xs text-gray-400 whitespace-nowrap font-semibold">Jan 20,2025</div>
-                  </div>
-                ))}
-              </>
-            )}
           </div>
         </div>
       </div>

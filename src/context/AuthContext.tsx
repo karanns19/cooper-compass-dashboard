@@ -1,13 +1,23 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, testUsers } from '../data/UserData';
+import { User } from '../data/UserData';
+
+const BASE_URL = 'https://backend-system-v2.onrender.com';
 
 interface AuthContextType {
     user: User | null;
-    login: (email: string, password: string) => Promise<boolean>;
+    login: (email: string, password: string, userType: 'airport' | 'airline') => Promise<boolean>;
     logout: () => void;
-    signup: (userData: Omit<User, 'id' | 'workSummary'>) => Promise<boolean>;
+    signup: (userData: {
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+        phoneNumber: string;
+        userType: 'airport' | 'airline';
+        gender: 'M' | 'F';
+    }) => Promise<boolean>;
     updateUser: (userData: Partial<User>) => void;
-    updatePassword: (oldPassword: string, newPassword: string) => Promise<boolean>;
+    updatePassword: () => Promise<boolean>;
     updateSettings: (settings: Partial<User['settings']>) => void;
 }
 
@@ -24,76 +34,148 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             localStorage.setItem('user', JSON.stringify(user));
         } else {
             localStorage.removeItem('user');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
         }
     }, [user]);
 
-    const login = async (email: string, password: string) => {
-        // Simulate API call
-        const foundUser = testUsers.find(
-            u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-        );
+    const login = async (email: string, password: string, userType: 'airport' | 'airline') => {
+        try {
+            const response = await fetch(`${BASE_URL}/api/user/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password, userType }),
+            });
 
-        if (foundUser) {
-            setUser(foundUser);
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Login failed:', errorData);
+                return false;
+            }
+
+            const backendData = await response.json();
+            
+            localStorage.setItem('accessToken', backendData.accessToken);
+            localStorage.setItem('refreshToken', backendData.refreshToken);
+
+            const userFromBackend = backendData.user;
+            const mappedUser: User = {
+                id: userFromBackend._id || '',
+                email: userFromBackend.email || '',
+                firstName: userFromBackend.firstName || '',
+                lastName: userFromBackend.lastName || '',
+                phoneNumber: userFromBackend.phoneNumber || '',
+                userType: userFromBackend.userType || '',
+                gender: userFromBackend.gender || '',
+                profileImage: userFromBackend.profileImage || 'https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg',
+                workSummary: {
+                    baggageHandledToday: 0,
+                    baggageLostCases: 0,
+                    baggageTransferUpdates: 0,
+                    averageResolutionTime: 0
+                },
+                settings: {
+                    emailNotifications: true,
+                    pushNotifications: true,
+                    smsNotifications: false,
+                    dailyReportEmail: true
+                }
+            };
+
+            setUser(mappedUser);
             return true;
+
+        } catch (error) {
+            console.error('Login request failed:', error);
+            return false;
         }
-        return false;
     };
 
     const logout = () => {
         setUser(null);
     };
 
-    const signup = async (userData: Omit<User, 'id' | 'workSummary'>) => {
-        // Simulate API call
-        const existingUser = testUsers.find(
-            u => u.email.toLowerCase() === userData.email.toLowerCase()
-        );
+    const signup = async (userData: {
+        email: string;
+        password: string;
+        firstName: string;
+        lastName: string;
+        phoneNumber: string;
+        userType: 'airport' | 'airline';
+        gender: 'M' | 'F';
+    }) => {
+        try {
+            const response = await fetch(`${BASE_URL}/api/user/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
 
-        if (existingUser) {
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Signup failed:', errorData);
+                return false;
+            }
+
+            const backendData = await response.json();
+            
+            localStorage.setItem('accessToken', backendData.accessToken);
+            localStorage.setItem('refreshToken', backendData.refreshToken);
+
+            const userFromBackend = backendData.user;
+            const mappedUser: User = {
+                id: userFromBackend._id || '',
+                email: userFromBackend.email || '',
+                firstName: userFromBackend.firstName || '',
+                lastName: userFromBackend.lastName || '',
+                phoneNumber: userFromBackend.phoneNumber || '',
+                userType: userFromBackend.userType || '',
+                gender: userFromBackend.gender || '',
+                profileImage: userFromBackend.profileImage || 'https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg',
+                workSummary: {
+                    baggageHandledToday: 0,
+                    baggageLostCases: 0,
+                    baggageTransferUpdates: 0,
+                    averageResolutionTime: 0
+                },
+                settings: {
+                    emailNotifications: true,
+                    pushNotifications: true,
+                    smsNotifications: false,
+                    dailyReportEmail: true
+                }
+            };
+
+            setUser(mappedUser);
+            return true;
+
+        } catch (error) {
+            console.error('Signup request failed:', error);
             return false;
         }
-
-        const newUser: User = {
-            ...userData,
-            id: String(testUsers.length + 1),
-            workSummary: {
-                baggageHandledToday: 0,
-                baggageLostCases: 0,
-                baggageTransferUpdates: 0,
-                averageResolutionTime: 0
-            }
-        };
-
-        testUsers.push(newUser);
-        setUser(newUser);
-        return true;
     };
 
     const updateUser = (userData: Partial<User>) => {
         if (user) {
             const updatedUser = { ...user, ...userData };
             setUser(updatedUser);
-            
-            // Update in testUsers array
-            const userIndex = testUsers.findIndex(u => u.id === user.id);
-            if (userIndex !== -1) {
-                testUsers[userIndex] = updatedUser;
-            }
         }
     };
 
-    const updatePassword = async (oldPassword: string, newPassword: string) => {
-        if (user && user.password === oldPassword) {
-            updateUser({ password: newPassword });
-            return true;
-        }
+    const updatePassword = async () => {
+        console.warn('updatePassword not implemented for backend');
         return false;
     };
 
     const updateSettings = (settings: Partial<User['settings']>) => {
+        console.warn('updateSettings not implemented for backend');
         if (user) {
-            updateUser({
+            setUser({
+                ...user,
                 settings: { ...user.settings, ...settings }
             });
         }

@@ -29,8 +29,8 @@ const AirlineHorizontalBarChart: React.FC = () => {
   const [data, setData] = useState<ChartData[]>([]);
 
   useEffect(() => {
-    setData(user?.role === 'Airport Staff' ? airlineTestData : airportTestData);
-  }, [user?.role]);
+    setData(user?.userType === 'airport' ? airlineTestData : airportTestData);
+  }, [user?.userType]);
 
   const chartOptions = {
     chart: {
@@ -38,7 +38,7 @@ const AirlineHorizontalBarChart: React.FC = () => {
       width: 350,
     },
     title: {
-      text: user?.role === 'Airport Staff' ? 'Flight Count (Airlines)' : 'Flight Count (Airports)',
+      text: user?.userType === 'airport' ? 'Flight Count (Airlines)' : 'Flight Count (Airports)',
       align: 'left',
       style: {
         fontSize: '16px',

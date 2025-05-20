@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FaUserCircle } from 'react-icons/fa';
 
+// Define a static profile image URL
+const STATIC_PROFILE_IMAGE = 'https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg'; // Placeholder static image URL
+
 function Modal({ open, onClose, title, children }: { open: boolean, onClose: () => void, title: string, children: React.ReactNode }) {
   if (!open) return null;
   return (
@@ -41,10 +44,13 @@ export default function Profile() {
     const [showNotifications, setShowNotifications] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    // Update edit form state to match backend-defined editable fields
     const [editForm, setEditForm] = useState({
         firstName: user?.firstName || '',
         lastName: user?.lastName || '',
-        location: user?.location || '',
+        phoneNumber: user?.phoneNumber || '',
+        // Removed location as per backend structure
+        // location: user?.location || '',
     });
     const [passwordForm, setPasswordForm] = useState({
         oldPassword: '',
@@ -58,12 +64,17 @@ export default function Profile() {
         dailyReportEmail: true,
     });
 
+    // Update handleEditSubmit to reflect changes in edit form
     const handleEditSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // Call updateUser with the fields from the edit form
+        // This will update the user object in AuthContext and local storage
         updateUser({
             firstName: editForm.firstName,
             lastName: editForm.lastName,
-            location: editForm.location,
+            phoneNumber: editForm.phoneNumber,
+            // Removed location from update call as it's not in editForm/backend structure
+            // location: editForm.location,
         });
         setShowEdit(false);
         setSuccess('Profile updated successfully');
@@ -77,14 +88,15 @@ export default function Profile() {
             setError('New passwords do not match');
             return;
         }
-        const success = await updatePassword(passwordForm.oldPassword, passwordForm.newPassword);
+        // Call updatePassword - currently a placeholder in AuthContext
+        const success = await updatePassword(); // No longer passing passwords to placeholder
         if (success) {
             setShowPassword(false);
             setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
             setSuccess('Password updated successfully');
             setTimeout(() => setSuccess(''), 3000);
         } else {
-            setError('Current password is incorrect');
+            setError('Password update failed (placeholder)');
         }
     };
 
@@ -94,6 +106,7 @@ export default function Profile() {
             [setting]: value,
         };
         setSettings(newSettings);
+        // Call updateSettings - currently updates local user state, needs backend integration
         updateSettings(newSettings);
         setSuccess('Settings updated successfully');
         setTimeout(() => setSuccess(''), 3000);
@@ -114,11 +127,21 @@ export default function Profile() {
             <div className="flex flex-col items-start">
                 <div className="flex items-center gap-3 mb-2">
                     <div className="bg-white rounded-xl p-4 shadow flex items-center justify-center">
-                        <FaUserCircle className="text-2xl text-[#23223a]" />
+                        {/* Display user's profile image or a default icon */}
+                        {user.profileImage ? (
+                             <img
+                                 src={STATIC_PROFILE_IMAGE}
+                                 alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
+                                 className="w-10 h-10 rounded-full object-cover"
+                             />
+                        ) : (
+                             <FaUserCircle className="text-2xl text-[#23223a]" />
+                        )}
                     </div>
                     <div>
                         <h1 className="text-xl font-bold text-[#23223a]">Profile</h1>
-                        <p className="text-gray-500 text-sm">Manage your profile</p>
+                        {/* Display user type if available from user object */}
+                        <p className="text-gray-500 text-sm">{user.userType ? `${user.userType.charAt(0).toUpperCase() + user.userType.slice(1)} Profile` : 'User Profile'}</p>
                     </div>
                 </div>
             </div>
@@ -127,14 +150,13 @@ export default function Profile() {
             <div className="flex flex-col items-start mb-8">
                 <div className="flex items-center p-6 gap-6 w-fit">
                     <img
-                        src={user.profileImage}
-                        alt={`${user.firstName} ${user.lastName}`}
+                        src={STATIC_PROFILE_IMAGE}
+                        alt={`${user.firstName || 'User'} ${user.lastName || ''}`}
                         className="w-20 h-20 rounded-full object-cover border"
                     />
                     <div>
-                        <div className="text-lg font-semibold">{user.firstName} {user.lastName}</div>
-                        <div className="text-gray-500">Baggage Handling {user.role}</div>
-                        <div className="text-gray-400 text-sm mt-1">{user.employeeId}</div>
+                        <div className="text-lg font-semibold">{user.firstName || 'Not Provided'} {user.lastName || ''}</div>
+                        <div className="text-gray-500">{user.userType ? user.userType.charAt(0).toUpperCase() + user.userType.slice(1) : 'User'}</div>
                     </div>
                 </div>
             </div>
@@ -143,13 +165,15 @@ export default function Profile() {
                 <div className="bg-white rounded-2xl shadow p-8 flex-1 min-w-[320px]">
                     <div className="font-bold text-xl mb-4">Personal Information</div>
                     <div className="border-t pt-6 space-y-6">
-                        <div className="text-gray-400 text-lg font-semibold">Name: <span className="text-black font-normal">{user.firstName} {user.lastName}</span></div>
-                        <div className="text-gray-400 text-lg font-semibold">Employee ID: <span className="text-black font-normal">{user.employeeId}</span></div>
-                        <div className="text-gray-400 text-lg font-semibold">Role: <span className="text-black font-normal">{user.role}</span></div>
-                        <div className="text-gray-400 text-lg font-semibold">Location: <span className="text-black font-normal">{user.location}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Name: <span className="text-black font-normal">{user.firstName || 'Not Provided'} {user.lastName || ''}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Email: <span className="text-black font-normal">{user.email || 'Not Provided'}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Phone Number: <span className="text-black font-normal">{user.phoneNumber || 'Not Provided'}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">User Type: <span className="text-black font-normal">{user.userType ? user.userType.charAt(0).toUpperCase() + user.userType.slice(1) : 'Not Provided'}</span></div>
+                        <div className="text-gray-400 text-lg font-semibold">Gender: <span className="text-black font-normal">{user.gender || 'Not Provided'}</span></div>
                     </div>
                 </div>
-                <div className="bg-white rounded-2xl shadow p-8 flex-1 min-w-[320px]">
+                {/* Removed Work Summary Section as it's not in the backend user payload */}
+                {/* <div className="bg-white rounded-2xl shadow p-8 flex-1 min-w-[320px]">
                     <div className="font-bold text-xl mb-4">Work Summary</div>
                     <div className="border-t pt-6 space-y-6">
                         <div className="text-gray-400 text-lg font-semibold">Baggage Handled Today: <span className="text-black font-normal">{user.workSummary.baggageHandledToday} Bags</span></div>
@@ -157,13 +181,14 @@ export default function Profile() {
                         <div className="text-gray-400 text-lg font-semibold">Baggage Transfer Updates: <span className="text-black font-normal">{user.workSummary.baggageTransferUpdates} Transfers</span></div>
                         <div className="text-gray-400 text-lg font-semibold">Average Resolution Time: <span className="text-black font-normal">{user.workSummary.averageResolutionTime} Minutes</span></div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className="p-8 mt-8">
                 <div className="font-bold text-xl mb-4">Settings</div>
                 <div className="flex flex-col gap-2 text-[#222]">
                     <button className="text-left py-1 px-1 rounded transition focus:outline-none cursor-pointer" style={{ fontWeight: 500 }} onClick={() => setShowEdit(true)}>Edit Profile</button>
+                    {/* Keep Change Password button, but functionality is placeholder */}
                     <button className="text-left py-1 px-1 rounded transition focus:outline-none cursor-pointer" style={{ fontWeight: 500 }} onClick={() => setShowPassword(true)}>Change Password</button>
                     <button className="text-left py-1 px-1 rounded transition focus:outline-none cursor-pointer" style={{ fontWeight: 500 }} onClick={() => setShowNotifications(true)}>Notification Settings</button>
                     <button className="text-left py-1 px-1 rounded transition focus:outline-none text-red-500 cursor-pointer" style={{ fontWeight: 500 }} onClick={handleLogout}>Logout</button>
@@ -171,6 +196,7 @@ export default function Profile() {
             </div>
             </div>
 
+            {/* Edit Profile Modal */}
             {showEdit && (
                 <Modal open={showEdit} onClose={() => setShowEdit(false)} title="Edit Profile">
                     <form onSubmit={handleEditSubmit} className="space-y-4">
@@ -192,16 +218,17 @@ export default function Profile() {
                                 className="w-full p-2 border border-gray-200 rounded-lg"
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Location</label>
-                            <input
-                                type="text"
-                                value={editForm.location}
-                                onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                                className="w-full p-2 border border-gray-200 rounded-lg"
-                            />
-                        </div>
-                        <div className="flex gap-2 mt-4">
+                        {/* Added Phone Number field to edit form based on backend structure */}
+                         <div>
+                             <label className="block text-sm font-medium mb-1">Phone Number</label>
+                             <input
+                                 type="text"
+                                 value={editForm.phoneNumber}
+                                 onChange={(e) => setEditForm({ ...editForm, phoneNumber: e.target.value })}
+                                 className="w-full p-2 border border-gray-200 rounded-lg"
+                             />
+                         </div>
+                         <div className="flex gap-2 mt-4">
                             <button type="submit" className="px-4 py-2 bg-[#432143] text-white rounded-lg hover:bg-[#532153] cursor-pointer">Save</button>
                             <button type="button" className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => setShowEdit(false)}>Cancel</button>
                         </div>
@@ -209,6 +236,7 @@ export default function Profile() {
                 </Modal>
             )}
 
+            {/* Change Password Modal - Functionality is placeholder */}
             {showPassword && (
                 <Modal open={showPassword} onClose={() => setShowPassword(false)} title="Change Password">
                     <form onSubmit={handlePasswordSubmit} className="space-y-4">
@@ -247,6 +275,7 @@ export default function Profile() {
                 </Modal>
             )}
 
+            {/* Notification Settings Modal - Functionality for saving needs backend integration */}
             {showNotifications && (
                 <Modal open={showNotifications} onClose={() => setShowNotifications(false)} title="Notification Settings">
                     <div className="space-y-6">
@@ -273,6 +302,7 @@ export default function Profile() {
                 </Modal>
             )}
 
+            {/* Success and Error Notifications */}
             {success && (
                 <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-green-50 text-green-600 px-6 py-3 rounded-lg shadow-lg z-50">
                     {success}

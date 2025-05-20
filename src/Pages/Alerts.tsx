@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useMemo, useEffect } from 'react';
-import { Search, MoreVertical, ChevronDown, X } from 'lucide-react';
-import { alertsData, AlertItem } from '../data/AlertsData';
+import { Search, MoreVertical, ChevronDown, X, Play, Square } from 'lucide-react';
+import { alertsData, AlertItem, AlertType, AlertStatus } from '../data/AlertsData';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { AlertService } from '../services/AlertService';
+import { useAuth } from '../context/AuthContext';
 
 export default function Alerts() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,23 +16,39 @@ export default function Alerts() {
   const [isDateDropdownOpen, setIsDateDropdownOpen] = useState(false);
   const [isPriorityDropdownOpen, setIsPriorityDropdownOpen] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState<AlertItem | null>(null);
+  const [alerts, setAlerts] = useState<AlertItem[]>(AlertService.getInstance().getActiveAlerts());
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const alertService = AlertService.getInstance();
 
   useEffect(() => {
     if (location.state && location.state.alertId) {
-      const found = alertsData.find(a => a.id === location.state.alertId);
+      const found = alertService.getAlertById(location.state.alertId);
       if (found) setSelectedAlert(found);
-      // Remove alertId from state after opening
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [location.state, location.pathname, navigate, alertService]);
+
+  useEffect(() => {
+    if (user) {
+      const unsubscribe = alertService.subscribe(() => {
+        setAlerts(alertService.getActiveAlerts());
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    } else {
+      alertService.stopBackgroundAlerts();
+    }
+  }, [user, alertService]);
 
   const dateOptions = ['Today', 'Yesterday', 'Last 7 days', 'Last 30 days', 'All'];
   const priorityOptions = ['All', 'High', 'Medium', 'Low'];
 
   const filteredAlerts = useMemo(() => {
-    return alertsData.filter(alert => {
+    return alerts.filter(alert => {
       const matchesSearch = 
         alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         alert.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -43,13 +61,26 @@ export default function Alerts() {
     });
   }, [searchQuery, selectedPriority]);
 
+  const statusColors: Record<AlertStatus, string> = {
+    active: 'bg-red-100 text-red-800',
+    investigating: 'bg-yellow-100 text-yellow-800',
+    resolved: 'bg-green-100 text-green-800',
+    pending: 'bg-blue-100 text-blue-800'
+  };
+
   const getAlertColor = (type: AlertItem['type']) => {
     const colors = {
-      transfer: 'bg-indigo-500',
+      transfer: 'bg-blue-500',
       security: 'bg-red-500',
       missing: 'bg-yellow-500',
-      unclaimed: 'bg-indigo-500',
-      damaged: 'bg-indigo-500'
+      unclaimed: 'bg-orange-500',
+      damaged: 'bg-red-500',
+      system: 'bg-purple-500',
+      weight: 'bg-yellow-500',
+      'no-show': 'bg-red-500',
+      tagless: 'bg-red-500',
+      stuck: 'bg-yellow-500',
+      mishandling: 'bg-red-500'
     };
     return colors[type] || 'bg-gray-500';
   };
@@ -160,6 +191,9 @@ export default function Alerts() {
                 <div>
                   <h2 className="text-lg font-semibold">{alert.title}</h2>
                   <p className="text-gray-600 mt-1">{alert.description}</p>
+                  <span className={`mt-2 inline-block px-3 py-1 rounded-full font-medium text-xs ${statusColors[alert.status]}`}>
+                    {alert.status}
+                  </span>
                 </div>
                 <span className="text-gray-500 text-sm">{alert.timestamp}</span>
               </div>

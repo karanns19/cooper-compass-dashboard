@@ -194,8 +194,7 @@ export default function FlightDetailsTable() {
     }
   }, [location.state]);
 
-  // Choose data based on user role
-  const data = user?.role === 'Airport Staff' ? dummyFlightsAirline : dummyFlightsAirport;
+  const data = user?.userType === 'airport' ? dummyFlightsAirline : dummyFlightsAirport;
 
   const filteredData = data.filter(f => {
     const matchesSearch =
@@ -207,8 +206,7 @@ export default function FlightDetailsTable() {
     return matchesSearch && matchesStatus;
   });
 
-  // Columns based on user role
-  const columns = user?.role === 'Airport Staff'
+  const columns = user?.userType === 'airport'
     ? [
       {
         name: 'Flight Number',

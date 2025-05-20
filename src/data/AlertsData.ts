@@ -1,57 +1,104 @@
+export type AlertType = 
+    | 'transfer'
+    | 'security'
+    | 'missing'
+    | 'unclaimed'
+    | 'damaged'
+    | 'system'
+    | 'weight'
+    | 'no-show'
+    | 'tagless'
+    | 'stuck'
+    | 'mishandling';
+
+export type AlertStatus = 'active' | 'investigating' | 'resolved' | 'pending';
+
 export interface AlertItem {
     id: string;
     title: string;
     description: string;
+    type: AlertType;
+    priority: string;
     timestamp: string;
-    type: 'transfer' | 'security' | 'missing' | 'unclaimed' | 'damaged';
-    priority: 'high' | 'medium' | 'low';
     details: string;
+    location?: string;
+    status: AlertStatus;
+    baggageTag?: string;
+    flightNumber?: string;
+    affectedFlights: string[];
 }
 
 export const alertsData: AlertItem[] = [
     {
         id: '1',
-        title: 'Transfer delay for baggage B654321',
-        description: 'The baggage transfer from flight EK401 to EK789 is delayed.',
-        timestamp: '10 min ago',
+        title: 'Transfer Delay at Delhi Airport',
+        description: 'Baggage transfer from 6E-123 to AI-101 delayed due to high volume',
+        timestamp: '12:35 PM',
         type: 'transfer',
         priority: 'medium',
-        details: 'Baggage Tag: B654321\nFrom Flight: EK401\nTo Flight: EK789\nDelay Reason: Weather disruption\nExpected Transfer Time: 30 min',
+        details: 'Transfer Point: TP2\nExpected Delay: 15 minutes\nAffected Bags: 12\nReason: High transfer volume',
+        location: 'DEL T3',
+        affectedFlights: ['6E-123', 'AI-101'],
+        status: 'active'
     },
     {
         id: '2',
-        title: 'Security Hold',
-        description: 'Bag #5566778 from flight BA143 flagged for additional security check. Immediate attention.',
-        timestamp: '10 min ago',
+        title: 'Security Hold - Additional Screening Required',
+        description: 'Bag MAA345678 flagged for additional security screening',
+        timestamp: '06:45 AM',
         type: 'security',
         priority: 'high',
-        details: 'Bag Tag: 5566778\nFlight: BA143\nHold Reason: Suspicious item detected\nRequired Action: Security team review',
+        details: 'Bag Tag: MAA345678\nFlight: SG-201\nLocation: Security Screening Area\nRequired Action: Manual inspection',
+        location: 'MAA T1',
+        affectedFlights: ['SG-201'],
+        status: 'investigating'
     },
     {
         id: '3',
-        title: 'Baggage missing for B345621',
-        description: 'The baggage tagged B345621 on flight AI202 is reported missing.',
-        timestamp: '01:00 PM',
-        type: 'missing',
+        title: 'BHS System Slowdown',
+        description: 'Baggage handling system experiencing reduced speed at Bangalore Airport',
+        timestamp: '07:40 AM',
+        type: 'system',
         priority: 'high',
-        details: 'Baggage Tag: B345621\nFlight: AI202\nLast Seen: Belt 3\nReported By: Staff ID 1023\nAction: Investigation started',
+        details: 'Location: T1 BHS\nAffected Area: Main sorting system\nImpact: 5-10 minute delays\nAction: Technical team dispatched',
+        location: 'BLR T1',
+        affectedFlights: ['6E-123', 'AI-102'],
+        status: 'active'
     },
     {
         id: '4',
-        title: 'Unclaimed Bag Notice',
-        description: 'Baggage #3344556 from flight AI304 unclaimed for 25 minutes at Belt 4.',
-        timestamp: '01:00 PM',
-        type: 'unclaimed',
+        title: 'Excess Baggage Fee Required',
+        description: 'Bag DEL456789 exceeds weight limit',
+        timestamp: '11:05 AM',
+        type: 'weight',
         priority: 'low',
-        details: 'Baggage Tag: 3344556\nFlight: AI304\nLocation: Belt 4\nUnclaimed Duration: 25 min\nAction: Announcement made',
+        details: 'Bag Tag: DEL456789\nCurrent Weight: 18.2 kg\nLimit: 15 kg\nRequired: Payment of excess baggage fee',
+        location: 'DEL T3',
+        affectedFlights: ['6E-456'],
+        status: 'active'
     },
     {
         id: '5',
-        title: 'Damaged Bag Reported',
-        description: 'Bag tag 1234567 from flight EK512 reported damaged at transfer hub.',
-        timestamp: '01:00 PM',
-        type: 'damaged',
+        title: 'Passenger No-Show Alert',
+        description: 'Passenger not boarded but baggage loaded for flight 6E-456',
+        timestamp: '12:45 PM',
+        type: 'no-show',
+        priority: 'high',
+        details: 'Flight: 6E-456\nBag Tag: DEL789012\nRequired Action: Offload baggage\nLocation: Gate G3',
+        location: 'DEL T3',
+        affectedFlights: ['6E-456'],
+        status: 'active'
+    },
+    {
+        id: '6',
+        title: 'Unclaimed Baggage Alert',
+        description: 'Baggage unclaimed at carousel for 20 minutes',
+        timestamp: '01:15 PM',
+        type: 'unclaimed',
         priority: 'medium',
-        details: 'Bag Tag: 1234567\nFlight: EK512\nDamage: Broken handle\nReported At: Transfer Hub\nAction: Owner notified',
+        details: 'Bag Tag: BLR123456\nFlight: 6E-123\nLocation: Carousel 3\nDuration: 20 minutes\nAction: PA announcement made',
+        location: 'BLR T1',
+        affectedFlights: ['6E-123'],
+        status: 'active'
     }
 ]; 

@@ -1,27 +1,44 @@
-[
   {
-    "airport": "Bengaluru",
-    "handled": 1500,
-    "missed": 150
+  "airports": [
+    {
+      "id": "BLR",
+      "name": "Kempegowda International Airport",
+      "city": "Bangalore",
+      "country": "India",
+      "terminals": ["T1", "T2"],
+      "gates": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"],
+      "baggageBelts": ["B1", "B2", "B3", "B4", "B5", "B6"],
+      "transferPoints": ["TP1", "TP2", "TP3"]
   },
   {
-    "airport": "Mumbai",
-    "handled": 1800,
-    "missed": 200
+      "id": "DEL",
+      "name": "Indira Gandhi International Airport",
+      "city": "Delhi",
+      "country": "India",
+      "terminals": ["T1", "T2", "T3"],
+      "gates": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10"],
+      "baggageBelts": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8"],
+      "transferPoints": ["TP1", "TP2", "TP3", "TP4"]
   },
   {
-    "airport": "Delhi",
-    "handled": 2000,
-    "missed": 250
+      "id": "BOM",
+      "name": "Chhatrapati Shivaji Maharaj International Airport",
+      "city": "Mumbai",
+      "country": "India",
+      "terminals": ["T1", "T2"],
+      "gates": ["G1", "G2", "G3", "G4", "G5", "G6"],
+      "baggageBelts": ["B1", "B2", "B3", "B4", "B5"],
+      "transferPoints": ["TP1", "TP2", "TP3"]
   },
   {
-    "airport": "Hyderabad",
-    "handled": 1200,
-    "missed": 180
-  },
-  {
-    "airport": "Kolkata",
-    "handled": 900,
-    "missed": 120
+      "id": "MAA",
+      "name": "Chennai International Airport",
+      "city": "Chennai",
+      "country": "India",
+      "terminals": ["T1", "T2"],
+      "gates": ["G1", "G2", "G3", "G4"],
+      "baggageBelts": ["B1", "B2", "B3", "B4"],
+      "transferPoints": ["TP1", "TP2"]
   }
-] 
+  ]
+} 

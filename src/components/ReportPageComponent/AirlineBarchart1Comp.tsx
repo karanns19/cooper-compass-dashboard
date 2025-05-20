@@ -17,20 +17,34 @@ const AirlineBarChart: React.FC = () => {
   const [data, setData] = useState<ChartData[]>([]);
 
   useEffect(() => {
-    setData(user?.role === 'Airport Staff' ? airlineData : airportData);
-  }, [user?.role]);
+    if (user?.userType === 'airport') {
+      const transformedData = airlineData.airlines.map(airline => ({
+        airline: airline.name,
+        handled: Math.floor(Math.random() * 1000) + 500,
+        missed: Math.floor(Math.random() * 50) + 1
+      }));
+      setData(transformedData);
+    } else {
+      const transformedData = airportData.airports.map(airport => ({
+        airport: airport.name,
+        handled: Math.floor(Math.random() * 2000) + 1000,
+        missed: Math.floor(Math.random() * 100) + 1
+      }));
+      setData(transformedData);
+    }
+  }, [user?.userType]);
 
   const chartOptions = {
     chart: {
       type: 'column',
     },
     title: {
-      text: user?.role === 'Airport Staff' ? 'Airline vs Baggage Count' : 'Airport vs Baggage Count',
+      text: user?.userType === 'airport' ? 'Airline vs Baggage Count' : 'Airport vs Baggage Count',
     },
     xAxis: {
-      categories: data.map((item) => user?.role === 'Airport Staff' ? item.airline : item.airport),
+      categories: data.map((item) => user?.userType === 'airport' ? item.airline : item.airport),
       title: {
-        text: user?.role === 'Airport Staff' ? 'Airlines' : 'Airports',
+        text: user?.userType === 'airport' ? 'Airlines' : 'Airports',
       },
       labels: {
         style: {
