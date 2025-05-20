@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useMemo, useEffect } from 'react';
-import { Search, MoreVertical, ChevronDown, X, Play, Square } from 'lucide-react';
-import { alertsData, AlertItem, AlertType, AlertStatus } from '../data/AlertsData';
+import { Search, MoreVertical, ChevronDown, X } from 'lucide-react';
+import { AlertItem, AlertStatus } from '../data/AlertsData';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AlertService } from '../services/AlertService';

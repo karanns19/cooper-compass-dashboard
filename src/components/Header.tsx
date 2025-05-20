@@ -35,7 +35,7 @@ const Header: FC<HeaderProps> = ({ isCollapsed, toggleSidebar }) => {
 
         <div className="hidden md:flex flex-col space-x-2">
           <span className="text-md sm:text-sm font-regular text-black">{user ? `${user.firstName} ${user.lastName}` : ''}</span>
-          <span className="text-sm text-black">{user?.role || ''}</span>
+          <span className="text-sm text-black">{user?.userType || ''}</span>
         </div>
       </div>
     </header>

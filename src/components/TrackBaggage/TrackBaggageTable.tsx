@@ -2,21 +2,12 @@ import React, { useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { FiEye } from 'react-icons/fi';
 // import { BsPinAngleFill } from 'react-icons/bs'; // New pin icon
-import baggageData from '../../data/TrackBaggageData.json';
+import { BaggageItem, baggageData } from '../../data/BaggageData';
 import BaggageTimeline from './BaggageTimeline';
 
-interface BaggageRow {
-  passengerName: string;
-  pnrNumber: string;
-  flightNumber: string;
-  baggageTag: string;
-  status: string;
-  lastLocation: string;
-}
-
 const TrackBaggageTable: React.FC = () => {
-  const [selectedBaggage, setSelectedBaggage] = useState<BaggageRow | null>(null);
-  const [pinnedRow, setPinnedRow] = useState<BaggageRow | null>(null);
+  const [selectedBaggage, setSelectedBaggage] = useState<BaggageItem | null>(null);
+  const [pinnedRow, setPinnedRow] = useState<BaggageItem | null>(null);
 
   const statusBadge = (status: string) => {
     const base = 'px-2 py-1 rounded-full text-xs font-semibold';
@@ -32,7 +23,7 @@ const TrackBaggageTable: React.FC = () => {
     }
   };
 
-  const handlePinRow = (row: BaggageRow) => {
+  const handlePinRow = (row: BaggageItem) => {
     if (pinnedRow?.pnrNumber === row.pnrNumber) {
       setPinnedRow(null); // Unpin if the same row is clicked again
     } else {
@@ -40,7 +31,7 @@ const TrackBaggageTable: React.FC = () => {
     }
   };
 
-  const columns: TableColumn<BaggageRow>[] = [
+  const columns: TableColumn<BaggageItem>[] = [
     {
       name: 'PNR',
       selector: (row) => row.pnrNumber,
