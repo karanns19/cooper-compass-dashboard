@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useAuth } from '../context/AuthContext';
 import { baggageData } from '../data/BaggageData';
-import { AlertStatus } from '../data/AlertsData';
 import AirlineBarChart from '../components/ReportPageComponent/AirlineBarchart1Comp';
 import { Eye, Trash2, ChevronDown } from 'lucide-react';
 import { FaPlaneArrival, FaPlaneDeparture, FaPlane, FaClock, FaChartBar, FaSuitcaseRolling, FaSearch, FaBell, FaArrowRight } from 'react-icons/fa';
